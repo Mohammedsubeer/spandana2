@@ -9,53 +9,79 @@
 
   <style>
     body { margin: 0; overflow: hidden; }
+    #tapToPlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      font-size: 18px;
+    }
   </style>
 </head>
 
 <body>
+
+<div id="tapToPlay">👆 Tap to enable sound</div>
 
 <a-scene
   mindar-image="imageTargetSrc: targets.mind;"
   vr-mode-ui="enabled: false"
   device-orientation-permission-ui="enabled: false">
 
-  <!-- ASSETS -->
   <a-assets>
-    <video id="arVideo" src="telunganavideo.mp4" loop muted playsinline></video>
+    <video
+      id="arVideo"
+      src="telunganavideo.mp4"
+      loop
+      playsinline
+      webkit-playsinline
+      preload="auto">
+    </video>
   </a-assets>
 
   <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <!-- IMAGE 1 -->
+  <!-- TARGET 1 -->
   <a-entity mindar-image-target="targetIndex: 0">
     <a-video
       src="#arVideo"
-      width="1.019"
-      height="1.19"
-      position="-0.0165 -0.0053 0.01">
+      width="1.15"
+      height="1.20"
+      position="0 -0.04 0.01">
     </a-video>
   </a-entity>
 
-  <!-- IMAGE 2 -->
+  <!-- TARGET 2 (DIFFERENT ALIGNMENT) -->
   <a-entity mindar-image-target="targetIndex: 1">
     <a-video
-      src="#arVideo"
-      width="1.019"
-      height="1.19"
-      position="-0.0165 -0.0053 0.01">
-    </a-video>
+  src="#arVideo"
+  width="0.95"
+  height="1.02"
+  position="0 0.0012 0.01">
+</a-video>
+
   </a-entity>
 
 </a-scene>
 
 <script>
   const video = document.querySelector("#arVideo");
+  const tapScreen = document.querySelector("#tapToPlay");
 
-  document.querySelectorAll("[mindar-image-target]").forEach((target) => {
+  tapScreen.addEventListener("click", () => {
+    video.muted = false;
+    video.play();
+    tapScreen.style.display = "none";
+  });
+
+  document.querySelectorAll("[mindar-image-target]").forEach(target => {
     target.addEventListener("targetFound", () => {
       video.play();
     });
-
     target.addEventListener("targetLost", () => {
       video.pause();
     });
